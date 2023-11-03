@@ -22,6 +22,11 @@ public class CategoryService {
          return cat.orElseThrow(() -> new ObjectNotFoundException("Categoria com o id: " + id + " não existe"));
     }
 
+    public Category findByName(String name){
+        Optional<Category> cat = categoryRepository.findByName(name);
+        return cat.orElseThrow(() -> new ObjectNotFoundException("Categoria com o name: " + name + " não existe"));
+    }
+
     public List<Category> findAll(){
         return categoryRepository.findAll();
     }

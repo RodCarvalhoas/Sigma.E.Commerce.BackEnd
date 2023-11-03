@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
-    @Query("SELECT obj FROM Product obj WHERE obj.category.id = :id_cat ORDER BY obj.name")
-    List<Product> findAllByCategory(@Param(value = "id_cat") UUID id_cat);
+    @Query("SELECT obj FROM Product obj WHERE obj.category.name = :categoryName ORDER BY obj.name")
+    List<Product> findAllByCategory(@Param(value = "categoryName") String categoryName);
 
 }

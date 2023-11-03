@@ -21,7 +21,7 @@ public class CategoryController {
     @Autowired
     public CategoryService categoryService;
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/byId/{id}")
     public ResponseEntity<CategoryDTO> findById(@PathVariable UUID id){
         Category cat = categoryService.findById(id);
         CategoryDTO categoryDTO = new CategoryDTO(cat);
@@ -45,4 +45,11 @@ public class CategoryController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(category.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id){
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
