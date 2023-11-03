@@ -1,9 +1,7 @@
 package com.Sigma.SigmaBackEnd.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,4 +16,9 @@ public class Product {
     private String name;
     private Number value;
     private String img;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
