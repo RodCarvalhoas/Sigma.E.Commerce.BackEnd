@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -12,13 +13,13 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
     private String name;
 
     @OneToMany(mappedBy = "category")
     private List<Product> product = new ArrayList<>();
 
-    public Category(String id, String name){
+    public Category(UUID id, String name){
         this.id = id;
         this.name = name;
     }

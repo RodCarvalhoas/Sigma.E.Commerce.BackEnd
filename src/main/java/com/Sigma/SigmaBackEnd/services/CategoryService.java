@@ -4,6 +4,7 @@ import com.Sigma.SigmaBackEnd.excepitons.ObjectNotFoundException;
 import com.Sigma.SigmaBackEnd.model.Category;
 import com.Sigma.SigmaBackEnd.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,4 +26,25 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    public Category create(Category cat){
+        return categoryRepository.save(cat);
+    }
+
+    public Category update(Category categoryUpdated, UUID id){
+        Category cat = findById(id);
+        categoryUpdated.setId(cat.getId());
+        return categoryRepository.save(categoryUpdated);
+    }
+
+    public void delete(UUID id){
+        Category cat = findById(id);
+        try{
+            categoryRepository.deleteById(cat.getId());
+        }catch (DataIntegrityViolationException ex){
+            throw
+                new com.Sigma.SigmaBackEnd.excepitons.DataIntegrityViolationException(
+                    "Categoria não pode ser deletada pois existe produto vinculado"
+                );
+        }
+    }
 }
