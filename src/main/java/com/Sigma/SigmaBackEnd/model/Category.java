@@ -2,6 +2,7 @@ package com.Sigma.SigmaBackEnd.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -17,7 +19,7 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    private List<Product> product = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     public Category(UUID id, String name){
         this.id = id;
