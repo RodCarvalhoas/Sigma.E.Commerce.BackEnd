@@ -9,13 +9,13 @@ import lombok.Data;
 public class ProductDTO {
 
     private String name;
-    private Number value;
+    private Number price;
     private String img;
     private String categoryName;
 
     public ProductDTO(Product product){
         this.name = product.getName();
-        this.value = product.getValue();
+        this.price = product.getPrice();
         this.img = product.getImg();
         this.categoryName = product.getCategory().getName();
     }

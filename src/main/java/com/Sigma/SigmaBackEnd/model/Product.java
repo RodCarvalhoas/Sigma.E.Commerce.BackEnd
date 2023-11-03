@@ -18,7 +18,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    private Number value;
+    private Number price;
     private String img;
 
     @JsonIgnore
