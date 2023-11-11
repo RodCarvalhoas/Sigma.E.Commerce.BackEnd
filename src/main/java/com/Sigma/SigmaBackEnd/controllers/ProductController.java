@@ -16,16 +16,26 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/product")
+@CrossOrigin
 public class ProductController {
 
     @Autowired
     public ProductService productService;
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<ProductDTO> findById(@PathVariable UUID id){
-        Product product = productService.findById(id);
+    @GetMapping(value = "/{productName}")
+    public ResponseEntity<ProductDTO> findById(@PathVariable String productName){
+        Product product = productService.findByName(productName);
         ProductDTO productDTO = new ProductDTO(product);
         return ResponseEntity.ok().body(productDTO);
+    }
+
+    @GetMapping(value = "/all")
+    public ResponseEntity<List<ProductDTO>> findAll(){
+        List<Product> productsListAllByCategory = productService.findAll();
+        List<ProductDTO> productDTOListAllByCategory = productsListAllByCategory
+                .stream()
+                .map(product -> new ProductDTO(product)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(productDTOListAllByCategory);
     }
 
     @GetMapping
