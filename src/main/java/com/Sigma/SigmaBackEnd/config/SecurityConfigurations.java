@@ -28,26 +28,32 @@ public class SecurityConfigurations {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                      HandlerMappingIntrospector introspector) throws Exception {
+                                                   HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
+
+        http
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.csrf(csrfConfigurer ->
                 csrfConfigurer.ignoringRequestMatchers(mvcMatcherBuilder.pattern(API_URL_PATTERN),
                         PathRequest.toH2Console()));
 
         http.headers(headersConfigurer ->
-                headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+                headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(mvcMatcherBuilder.pattern(API_URL_PATTERN + "login")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(
+                                API_URL_PATTERN + "product/all")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(
+                                API_URL_PATTERN + "product?categoryName=**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(
+                                API_URL_PATTERN + "product/**")).permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .anyRequest().hasRole("ADMIN")
+                        .anyRequest().authenticated()
         );
-
-        http
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
