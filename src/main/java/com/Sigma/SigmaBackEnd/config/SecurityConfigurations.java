@@ -42,15 +42,17 @@ public class SecurityConfigurations {
         http.headers(headersConfigurer ->
                 headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
+        http.cors(cors -> cors.configure(http));
+
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(mvcMatcherBuilder.pattern(API_URL_PATTERN + "login")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern(
                                 API_URL_PATTERN + "product/all")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern(
-                                API_URL_PATTERN + "product?categoryName=**")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(
                                 API_URL_PATTERN + "product/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(
+                                API_URL_PATTERN + "product?categoryName=**")).permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .anyRequest().authenticated()
         );

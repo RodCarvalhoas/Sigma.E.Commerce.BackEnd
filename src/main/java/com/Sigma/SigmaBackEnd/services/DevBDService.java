@@ -25,7 +25,7 @@ public class DevBDService {
 
     public void startBDH2() {
 
-        Category category = new Category(null, "perifericos");
+        Category category = new Category(null, "COMPUTADORES");
 
         Product product = new Product(null,
                 "PC Gamer Intel Core i5-10400F, GEFORCE RTX 3060 12GB, 16G, SSD M.2 512GB, 750W 80 PLUS, Linux - 19651",
