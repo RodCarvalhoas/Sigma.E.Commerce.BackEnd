@@ -22,6 +22,7 @@ public class Product {
     private String name;
     private Number price;
     private String img;
+    private Number quantity;
 
     @JsonIgnore
     @ManyToOne

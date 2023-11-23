@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -51,6 +52,8 @@ public class SecurityConfigurations {
                                 API_URL_PATTERN + "product/all")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern(
                                 API_URL_PATTERN + "product/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(
+                                HttpMethod.POST,API_URL_PATTERN + "product")).hasRole("ADMIN")
                         .requestMatchers(mvcMatcherBuilder.pattern(
                                 API_URL_PATTERN + "product?categoryName=**")).permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
