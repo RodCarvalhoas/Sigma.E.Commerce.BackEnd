@@ -56,14 +56,6 @@ public class ProductController {
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductDTO> update(@RequestBody ProductDTO productDTO, @PathVariable UUID id){
-        Product product = new Product();
-        BeanUtils.copyProperties(productDTO, product);
-        productService.update(product, productDTO.getCategoryName(), id);
-        return ResponseEntity.ok().body(productDTO);
-    }
-
     @DeleteMapping
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         productService.delete(id);
