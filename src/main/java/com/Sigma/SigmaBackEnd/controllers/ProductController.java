@@ -23,10 +23,9 @@ public class ProductController {
     public ProductService productService;
 
     @GetMapping(value = "/{productName}")
-    public ResponseEntity<ProductDTO> findById(@PathVariable String productName){
+    public ResponseEntity<Product> findById(@PathVariable String productName){
         Product product = productService.findByName(productName);
-        ProductDTO productDTO = new ProductDTO(product);
-        return ResponseEntity.ok().body(productDTO);
+        return ResponseEntity.ok().body(product);
     }
 
     @GetMapping(value = "/all")

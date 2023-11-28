@@ -29,6 +29,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<Favorite> favorite = new ArrayList<>();
 }

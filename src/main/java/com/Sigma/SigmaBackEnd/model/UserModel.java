@@ -30,6 +30,7 @@ public class UserModel implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "userModel", fetch = FetchType.EAGER)
     private List<Favorite> favorites = new ArrayList<>();
 

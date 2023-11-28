@@ -56,8 +56,10 @@ public class SecurityConfigurations {
                                 HttpMethod.POST,API_URL_PATTERN + "product")).hasRole("ADMIN")
                         .requestMatchers(mvcMatcherBuilder.pattern(
                                 API_URL_PATTERN + "product?categoryName=**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(API_URL_PATTERN + "favorite/**")).authenticated()
+                        .requestMatchers(mvcMatcherBuilder.pattern(API_URL_PATTERN + "user/**")).authenticated()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
         );
 
         return http.build();
