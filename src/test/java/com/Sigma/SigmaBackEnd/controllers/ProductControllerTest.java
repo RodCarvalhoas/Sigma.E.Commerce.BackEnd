@@ -1,6 +1,7 @@
 package com.Sigma.SigmaBackEnd.controllers;
 
 import com.Sigma.SigmaBackEnd.dtos.ProductDTO;
+import com.Sigma.SigmaBackEnd.excepitons.ObjectNotFoundException;
 import com.Sigma.SigmaBackEnd.model.Category;
 import com.Sigma.SigmaBackEnd.model.Product;
 import com.Sigma.SigmaBackEnd.services.ProductService;
@@ -12,9 +13,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -75,4 +80,98 @@ public class ProductControllerTest {
         Assertions.assertEquals(HttpStatus.OK, productDTOList.getStatusCode());
         Assertions.assertEquals(0, productDTOList.getBody().size());
     }
+
+    @Test
+    void whenFindByNameThenReturnProduct(){
+        Mockito.when(productService.findByName(Mockito.anyString())).thenReturn(product1);
+
+        ResponseEntity<Product> productResponseEntity = productController.findByName("Fone");
+
+        Assertions.assertNotNull(productResponseEntity);
+        Assertions.assertEquals(ResponseEntity.class, productResponseEntity.getClass());
+        Assertions.assertEquals(HttpStatus.OK, productResponseEntity.getStatusCode());
+        Assertions.assertEquals(product1, productResponseEntity.getBody());
+    }
+
+    @Test
+    void whenFindNonExistingProductByNameThenThrowObjectNotFoundException() {
+        Mockito.when(productService.findByName(Mockito.anyString())).thenThrow(ObjectNotFoundException.class);
+
+        Assertions.assertThrows(ObjectNotFoundException.class, () -> {
+            productController.findByName("NomeProdutoInexistente");
+        });
+    }
+
+    @Test
+    void whenFindAllByCategoryThenReturnListOfProducts(){
+        Mockito.when(productService.findAllByCategory(Mockito.anyString())).thenReturn(productList);
+
+        ResponseEntity<List<ProductDTO>> productDTOList = productController.findAllByCategory("PERIFERICOS");
+
+        Assertions.assertNotNull(productDTOList);
+        Assertions.assertEquals(ResponseEntity.class, productDTOList.getClass());
+        Assertions.assertEquals(HttpStatus.OK, productDTOList.getStatusCode());
+        Assertions.assertEquals(2, productDTOList.getBody().size());
+        Assertions.assertEquals(product1.getName(), productDTOList.getBody().get(0).getName());
+    }
+
+    @Test
+    void whenFindAllByNonExistingCategoryThenThrowObjectNotFoundException() {
+        Mockito.when(productService.findAllByCategory(Mockito.anyString())).thenThrow(ObjectNotFoundException.class);
+
+        Assertions.assertThrows(ObjectNotFoundException.class, () -> {
+            productController.findAllByCategory("CategoriaInexistente");
+        });
+    }
+
+    @Test
+    void whenCreateProductThenReturnCreatedStatusWithLocationHeader(){
+        ProductDTO newProductDTO = new ProductDTO("Monitor", 300, "monitor.img", "PERIFERICOS", 4);
+
+        Mockito.doAnswer(invocation -> {
+            Product createdProduct = invocation.getArgument(0);
+            createdProduct.setId(ID_PRODUCT1);
+            return null;
+        }).when(productService).create(Mockito.any(Product.class), Mockito.anyString());
+
+        ResponseEntity<ProductDTO> responseEntity = productController.create(newProductDTO);
+
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+
+        // Verificação do header
+        HttpHeaders headers = responseEntity.getHeaders();
+        Assertions.assertNotNull(headers);
+        Assertions.assertTrue(headers.containsKey(HttpHeaders.LOCATION));
+
+        String locationUri = headers.getFirst(HttpHeaders.LOCATION);
+        Assertions.assertNotNull(locationUri);
+
+        UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
+        URI expectedUri = uriBuilder.path("/{id}").buildAndExpand(ID_PRODUCT1).toUri();
+        Assertions.assertEquals(expectedUri.toString(), locationUri);
+    }
+
+    @Test
+    void whenDeleteProductThenReturnNoContent(){
+        Mockito.doNothing().when(productService).delete(Mockito.any(UUID.class));
+
+        ResponseEntity<Void> responseEntity = productController.delete(ID_PRODUCT1);
+
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertEquals(ResponseEntity.class, responseEntity.getClass());
+        Assertions.assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void whenDeleteNonExistingProductThenThrowObjectNotFoundException() {
+        Mockito.doThrow(ObjectNotFoundException.class).when(productService).delete(Mockito.any(UUID.class));
+
+        Assertions.assertThrows(ObjectNotFoundException.class, () -> {
+            productController.delete(UUID.randomUUID());
+        });
+    }
+
+
+
 }

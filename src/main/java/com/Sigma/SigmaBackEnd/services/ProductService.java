@@ -27,7 +27,7 @@ public class ProductService {
 
     public Product findByName(String productName){
         Optional<Product> product = productRepository.findByName(productName);
-        return product.orElseThrow(() -> new ObjectNotFoundException("Produto com o namo: " + productName + " não encontrado"));
+        return product.orElseThrow(() -> new ObjectNotFoundException("Produto com o nome: " + productName + " não encontrado"));
     }
 
     public List<Product> findAll(){
