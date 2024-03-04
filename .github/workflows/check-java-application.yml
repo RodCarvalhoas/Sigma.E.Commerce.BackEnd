@@ -1,0 +1,33 @@
+name: Check Java application
+
+on: [pull_request]
+
+env:
+  MIN_COVERAGE_REQUIRED: 75
+
+jobs:
+  java-test-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '17' # Ou a versão desejada
+
+    - name: Install Maven
+      run: sudo apt-get install maven -y
+
+    - name: Test code
+      run: mvn clean test
+
+    - name: Check coverage percentage
+      id: total-coverage
+      run: |
+        mvn jacoco:report
+        grep -E 'total[[:space:]]+[0-9]+\.[0-9]+' target/site/jacoco/index.html | awk '{print $3}' | awk -F '%' '{print $1}' | xargs printf "%.0f"
+        echo $'\n'
